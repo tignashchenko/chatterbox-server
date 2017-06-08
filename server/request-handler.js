@@ -11,37 +11,46 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var responseBody = {
+  results: []
+};
 
-var defaultCorsHeaders = {
+var headers = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10 // Seconds.
+  'access-control-max-age': 10, // Seconds.
+  'content-type': 'text/plain'
 };
 
 var requestHandler = function(request, response) {
-  
+
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
-  var statusCode = 200;
+  var successCode = 200;
+  var postCode = 201;
+  var errorCode = 404;
 
-  var headers = defaultCorsHeaders;
+  if (request.method === 'POST') {
+    request.on('data', function(chunk) {
+      responseBody.results.push(JSON.parse(chunk.toString()));
+    });
 
-  headers['Content-Type'] = 'text/plain';
-
-  response.writeHead(statusCode, headers);
-
-  var responseBody = {
-    method: request.method,
-    url: request.url,
-    body: request.body,
-    results: []
-  };
-
-  response.end(JSON.stringify(responseBody));
+    request.on('end', function(message) {
+      response.writeHead(postCode, headers);
+      response.end(JSON.stringify(responseBody));
+    });
+  } else if (request.method === 'GET' && request.url === '/classes/messages') {
+    response.writeHead(successCode, headers);
+    response.end(JSON.stringify(responseBody));
+  } else if (request.method === 'OPTIONS') {
+    response.writeHead(successCode, headers);
+    response.end(JSON.stringify(responseBody));
+  } else {
+    response.statusCode = errorCode;
+    response.end();
+  }
+  console.log(request.url);
 };
 
-module.exports.requestHandler = requestHandler;
-
-
-
+module.exports= requestHandler;
