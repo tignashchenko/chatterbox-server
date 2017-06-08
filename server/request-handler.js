@@ -23,7 +23,7 @@ var requestHandler = function(request, response) {
     'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'access-control-allow-headers': 'content-type, accept',
     'access-control-max-age': 10, // Seconds.
-    'content-type': 'text/plain'
+    'content-type': 'application/json'
   };
 
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
@@ -39,17 +39,17 @@ var requestHandler = function(request, response) {
       //console.log(response.statusCode);
       response.end(JSON.stringify(responseBody));
     });
-  } else if (request.method === 'GET' && request.url === '/classes/messages') {
+  } else if (request.method === 'GET' && (request.url).includes('/classes/messages')) {
     response.writeHead(200, headers);
-    //console.log(response.statusCode);
+    //console.log(response.responseBody);
     response.end(JSON.stringify(responseBody));
   } else if (request.method === 'OPTIONS') {
     response.writeHead(200, headers);
-    //console.log(response.statusCode);
+    //console.log(response.responseBody);
     response.end(JSON.stringify(responseBody));
   } else {
     response.writeHead(404, headers);
-    //console.log(response.statusCode);
+    //console.log(response.responseBody);
     response.end(JSON.stringify(responseBody));
   }
 };
