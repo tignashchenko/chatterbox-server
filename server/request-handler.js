@@ -34,7 +34,8 @@ var requestHandler = function(request, response) {
   var responseBody = {
     method: request.method,
     url: request.url,
-    body: request.body
+    body: request.body,
+    results: []
   };
 
   response.end(JSON.stringify(responseBody));
