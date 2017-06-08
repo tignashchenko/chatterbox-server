@@ -37,7 +37,7 @@ var requestHandler = function(request, response) {
     body: request.body
   };
 
-  response.end(statusCode, JSON.stringify(responseBody));
+  response.end(JSON.stringify(responseBody));
 };
 
 module.exports.requestHandler = requestHandler;
